@@ -1,5 +1,5 @@
-#ifndef ROUTING_TYPES_GRAPH_HPP
-#define ROUTING_TYPES_GRAPH_HPP
+#ifndef ROUTING_GRAPH_HPP
+#define ROUTING_GRAPH_HPP
 
 #include "endpoint.hpp"
 #include <stdint.h>

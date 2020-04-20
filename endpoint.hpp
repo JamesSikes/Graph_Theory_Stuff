@@ -1,5 +1,5 @@
-#ifndef ROUTING_TYPES_EDGE_HPP
-#define ROUTING_TYPES_EDGE_HPP
+#ifndef ROUTING_ENDPOINT_HPP
+#define ROUTING_ENDPOINT_HPP
 
 #include <stdint.h>
 

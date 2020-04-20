@@ -1,5 +1,5 @@
-#ifndef GRAPH_GENERATOR_HPP
-#define GRAPH_GENERATOR_HPP
+#ifndef ROUTING_GRAPH_GENERATOR_HPP
+#define ROUTING_GRAPH_GENERATOR_HPP
 
 #include "graph.hpp"
 #include <stdint.h>
