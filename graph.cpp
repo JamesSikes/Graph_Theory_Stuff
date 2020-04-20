@@ -7,30 +7,21 @@ namespace Routing
     //----------------------------------------------------
     void Graph::addEdge(const uint32_t src, const uint32_t dest)
     {
-        this->edges_[src].insert(dest);
+        this->vertices_.insert(src);
+        this->vertices_.insert(dest);
+        this->edges_[src].insert(Endpoint(dest));
     }
 
     //----------------------------------------------------
     void Graph::removeEdge(const uint32_t src, const uint32_t dest)
     {
-        edgesType::iterator srcIt = this->edges_.find(src);
-        if(srcIt != this->edges_.end())
-        {
-            srcIt->second.erase(dest); //Remove the edge
-        }
+        this->edges_[src].erase(Endpoint(dest));
     }
 
     //----------------------------------------------------
     void Graph::removeVertex(const uint32_t vertex)
     {
-        for(edgesType::iterator srcIt = this->edges_.begin(); srcIt != this->edges_.end(); ++srcIt)
-        {
-            // Remove all edges involving vertex
-            srcIt->second.erase(vertex);
-        }
-
-        // Remove the vertex
-        this->edges_.erase(vertex);
+        this->vertices_.erase(vertex);
     }
 
     //----------------------------------------------------
@@ -48,27 +39,34 @@ namespace Routing
 
         // Creating an adjacency matrix
         //
-        // First row is all vertices
-        auto srcIt = this->edges_.begin();
-        oss << std::setw(w*2) << srcIt->first; //Offset initial row so we get a conventional matrix representation
-        for(++srcIt; srcIt != this->edges_.end(); ++srcIt)
+        // First row: all vertices
+        auto it = this->vertices_.begin();
+        // Leave initial row blank so we get a conventional matrix representation
+        oss << std::setw(w*2) << *it;
+        for(++it; it != this->vertices_.end(); ++it)
         {
-            oss << std::setw(w) << srcIt->first;
+            oss << std::setw(w) << *it;
         }
 
-        // Subsequent rows are each vertex and it's adjacency to other vertices (1 if adjacent; 0 if not)
-        for(auto it = this->edges_.begin(); it != this->edges_.end(); ++it)
+        // Subsequent rows: each vertex and its adjacency to other vertices (1 if adjacent; 0 if not)
+        for(auto it = this->vertices_.begin(); it != this->vertices_.end(); ++it)
         {
-            oss << "\n" << std::setw(w) << it->first;
-            for(auto it2 = this->edges_.begin(); it2 != this->edges_.end(); ++it2)
+            oss << "\n" << std::setw(w) << *it;
+            for(auto it2 = this->vertices_.begin(); it2 != this->vertices_.end(); ++it2)
             {
-                if(it->second.find(it2->first) != it->second.end())
+                // Find source vertex in edge map
+                auto srcIt = this->edges_.find(*it);
+                if(srcIt != this->edges_.end())
                 {
-                    oss << std::setw(w) << "1";
-                }
-                else
-                {
-                    oss << std::setw(w) << "0";
+                    // Found it. Look for an edge to the adjacent vertex
+                    if(srcIt->second.find(*it2) != srcIt->second.end())
+                    {
+                        oss << std::setw(w) << "1";
+                    }
+                    else
+                    {
+                        oss << std::setw(w) << "0";
+                    }
                 }
             }
         }
